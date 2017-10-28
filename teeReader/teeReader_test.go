@@ -10,7 +10,7 @@ import (
 
 func ExampleTeeReaderBasic() {
 	// This reader could be any Reader, like a file or an http.request.body
-	r :=  strings.NewReader("El perro de San Roque no tiene rabo\n")
+	r := strings.NewReader("El perro de San Roque no tiene rabo\n")
 	w := os.Stdout
 
 	//TeeReader returns a new Reader that reads from r. We can read from tee in te same way we read from r. The
@@ -26,5 +26,4 @@ func ExampleTeeReaderBasic() {
 	// El perro de San Roque no tiene rabo
 	// El perro de San Roque no tiene rabo
 }
-
 
