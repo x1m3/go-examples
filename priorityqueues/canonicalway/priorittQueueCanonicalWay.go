@@ -2,13 +2,18 @@ package canonicalway
 
 import (
 	"container/heap"
+	"sync"
 )
 
 type PriorityQueue struct {
+	sync.Mutex
 	queue priorityQueueInternal
 }
 
 func (pq *PriorityQueue) Push(something interface{}, priority int) {
+	pq.Lock()
+	defer pq.Unlock()
+
 	heap.Push(&pq.queue, &item{
 		value:    something,
 		priority: priority,
@@ -17,6 +22,9 @@ func (pq *PriorityQueue) Push(something interface{}, priority int) {
 }
 
 func (pq *PriorityQueue) Pop() interface{} {
+	pq.Lock()
+	defer pq.Unlock()
+
 	if pq.queue.Len() <= 0 {
 		return nil
 	}
