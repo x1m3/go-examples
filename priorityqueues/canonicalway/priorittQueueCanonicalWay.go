@@ -12,23 +12,26 @@ type PriorityQueue struct {
 
 func (pq *PriorityQueue) Push(something interface{}, priority int) {
 	pq.Lock()
-	defer pq.Unlock()
 
 	heap.Push(&pq.queue, &item{
 		value:    something,
 		priority: priority,
 		index:    pq.queue.Len() + 1,
 	})
+
+	pq.Unlock()
 }
 
 func (pq *PriorityQueue) Pop() interface{} {
 	pq.Lock()
-	defer pq.Unlock()
 
 	if pq.queue.Len() <= 0 {
+		pq.Unlock()
 		return nil
 	}
-	return heap.Pop(&pq.queue).(*item).value
+	r := heap.Pop(&pq.queue).(*item).value
+	pq.Unlock()
+	return r
 }
 
 func NewPriorityQueue() *PriorityQueue {

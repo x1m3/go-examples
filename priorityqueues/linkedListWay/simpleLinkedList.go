@@ -15,20 +15,19 @@ type LinkedQueue struct {
 	sync.RWMutex
 	first *item
 	last  *item
-	count int
+	Count int
 }
 
 func NewLinkedQueue() *LinkedQueue {
-	return &LinkedQueue{first: nil, last: nil, count: 0}
+	return &LinkedQueue{first: nil, last: nil, Count: 0}
 }
 
 func (q *LinkedQueue) Push(something interface{}) {
 	n := newItem(something)
 
 	q.Lock()
-	defer q.Unlock()
 
-	q.count++
+	q.Count++
 
 	if q.first == nil {
 		q.first = n
@@ -37,32 +36,29 @@ func (q *LinkedQueue) Push(something interface{}) {
 		q.last.next = n
 		q.last = n
 	}
+
+	q.Unlock()
 }
 
 func (q *LinkedQueue) Pop() interface{} {
 	q.Lock()
-	defer q.Unlock()
 
-	switch q.count {
+	switch q.Count {
 	case 0:
+		q.Unlock()
 		return nil
 	case 1:
 		r := q.first
 		q.first = nil
 		q.last = nil
-		q.count--
+		q.Count--
+		q.Unlock()
 		return r.value
 	default:
 		r := q.first
 		q.first = q.first.next
-		q.count--
+		q.Count--
+		q.Unlock()
 		return r.value
 	}
-}
-
-func (q *LinkedQueue) Count() int {
-	q.RLock()
-	defer q.RUnlock()
-
-	return q.count
 }
